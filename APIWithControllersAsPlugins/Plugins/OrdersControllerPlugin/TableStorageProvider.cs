@@ -4,19 +4,19 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace TableStoragePlugin
+namespace OrdersControllerPlugin
 {
-    public abstract class TableStorageProviderBase<T> where T : TableEntity, new()
+    public class TableStorageProvider<T> where T : TableEntity, new()
     {
         private readonly TableStorageConfig config;
         private CloudTable table;
 
-        protected TableStorageProviderBase(TableStorageConfig config)
+        protected TableStorageProvider(TableStorageConfig config)
         {
             this.config = config;
         }
 
-        protected async Task ConnectToTableAsync()
+        public async Task ConnectToTableAsync()
         {
             CloudStorageAccount storageAccount = new CloudStorageAccount(
                 new StorageCredentials(this.config.StorageAccount, this.config.StorageKey), false);
@@ -27,7 +27,7 @@ namespace TableStoragePlugin
             await table.CreateIfNotExistsAsync();
         }
 
-        protected async Task<IEnumerable<T>> GetAll()
+        public async Task<IEnumerable<T>> GetAll()
         {
             TableQuery<T> query = new TableQuery<T>();
 
@@ -46,7 +46,7 @@ namespace TableStoragePlugin
             return results;
         }
 
-        protected async Task<IEnumerable<T>> Search(string term)
+        public async Task<IEnumerable<T>> Search(string term)
         {
             TableQuery<T> query = new TableQuery<T>();
             query.FilterString = term;
@@ -66,14 +66,14 @@ namespace TableStoragePlugin
             return results;
         }
 
-        protected async Task<T> InsertOrUpdate(T entity)
+        public async Task<T> InsertOrUpdate(T entity)
         {
             var operation = TableOperation.InsertOrReplace(entity);
             await this.table.ExecuteAsync(operation);
             return entity;
         }
 
-        protected async Task<T> GetItem(string partitionKey, string rowKey)
+        public async Task<T> GetItem(string partitionKey, string rowKey)
         {
             var operation = TableOperation.Retrieve<T>(partitionKey, rowKey);
             var result = await table.ExecuteAsync(operation);
@@ -81,7 +81,7 @@ namespace TableStoragePlugin
             return (T)(dynamic)result.Result;
         }
 
-        protected async Task Delete(string partitionKey, string rowKey)
+        public async Task Delete(string partitionKey, string rowKey)
         {
             var item = await GetItem(partitionKey, rowKey);
             var operation = TableOperation.Delete(item);

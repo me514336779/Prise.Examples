@@ -1,4 +1,4 @@
-﻿namespace TableStoragePlugin
+﻿namespace OrdersControllerPlugin
 {
     public class TableStorageConfig
     {
