@@ -10,7 +10,7 @@ using OrdersControllerPlugin.Models;
 namespace OrdersControllerPlugin
 {
     [ApiController]
-    [Route("api/orders")]
+    [Route("[controller]")]
     public class OrdersController : ControllerBase
     {
         private readonly TableStorageProvider<OrderTableEntity> tableStorageProvider;

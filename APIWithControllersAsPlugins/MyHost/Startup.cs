@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MyHost.Infrastructure;
 using Prise;
 using Prise.AssemblyScanning.Discovery;
 
@@ -31,7 +33,9 @@ namespace MyHost
         {
             services.AddControllers();
 
-            services.AddPriseAsSingleton<IFeaturePlugin>(config =>
+            services.AddSingleton<IActionDescriptorChangeProvider>(new ActionDescriptorChangeProvider());
+
+            services.AddPrise<IFeaturePlugin>(config =>
                 config
                     .WithDefaultOptions(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"))
                     .ScanForAssemblies(composer =>

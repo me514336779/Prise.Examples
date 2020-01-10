@@ -13,8 +13,8 @@ namespace Contract
 
     public interface IFeaturePlugin
     {
-        Task EnableFeature(ApplicationPartManager partManager, IFeatureServiceProvider featureServiceProvider);
-        Task DisableFeature();
+        //Task EnableFeature(ApplicationPartManager partManager, IFeatureServiceProvider featureServiceProvider);
+        //Task DisableFeature();
 
         string Name { get; }
         string Description { get; }

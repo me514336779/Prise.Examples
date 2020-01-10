@@ -1,5 +1,10 @@
 {
   "commands": {
+    "APIWithControllersAsPlugins": {
+      "FileName": "cmd.exe",
+      "WorkingDirectory": "APIWithControllersAsPlugins",
+      "Arguments": "/c cake"
+    },
     "AssemblyDiscovery": {
       "FileName": "cmd.exe",
       "WorkingDirectory": "AssemblyDiscovery",
