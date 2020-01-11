@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Contract;
 using Microsoft.AspNetCore.Mvc;
@@ -30,12 +32,12 @@ namespace MyHost.Controllers
         //private readonly ActionDescriptorChangeProvider changeProvider;
         private readonly ControllerFeatureProvider controllerFeatureProvider;
         //private readonly IFeatureServiceProvider featureServiceProvider;
-        private readonly IActionDescriptorChangeProvider actionDescriptorChangeProvider;
+        private readonly ActionDescriptorChangeProvider actionDescriptorChangeProvider;
 
         public FeatureController(
             IPluginLoadOptions<IFeaturePlugin> pluginLoadOptions,
             ApplicationPartManager applicationPartManager,
-            IActionDescriptorChangeProvider actionDescriptorChangeProvider
+            ActionDescriptorChangeProvider actionDescriptorChangeProvider
             //ActionDescriptorChangeProvider changeProvider
             //IPluginLoader<IFeaturePlugin> pluginLoader,
             //IFeatureServiceProvider featureServiceProvider
@@ -68,31 +70,19 @@ namespace MyHost.Controllers
             var pluginToEnable = pluginAssemblies.FirstOrDefault(p => p.PluginType.Name == name);
             if (pluginToEnable == null)
                 return new NotFoundResult();
-            //1.Plugins == singleton
-            //2.IFeatureServiceCollection => populated by feature.Enable(which holds an IServiceCollection)(addtransient, scoped,,,,)
-            //3.Controller => IFeatureServiceProvider ==> IFeatureServiceCollection.BuildProvider()(this provides ALL plugins services)
-            //4.Controller get service from provider
 
             var assemblyPluginLoadContext = DefaultPluginLoadContext<IFeaturePlugin>.FromAssemblyScanResult(pluginToEnable);
-            var pluginAssembly = await pluginLoadOptions.AssemblyLoader.LoadAsync(assemblyPluginLoadContext);
-            this.applicationPartManager.ApplicationParts.Add(new AssemblyPart(pluginAssembly));
-            //var factory = ApplicationPartFactory.GetApplicationPartFactory(pluginAssembly);
-            //foreach (var part in factory.GetApplicationParts(pluginAssembly))
-            //{
-            //    this.applicationPartManager.ApplicationParts.Add(part);
-            //}
-            // TODO WHY ROUTE 404 ???
-            var controllersFromPlugin = pluginAssembly.GetTypes().Where(t => t.BaseType.Name == typeof(ControllerBase).Name);
-            var controllerFeature = new ControllerFeature();
-            foreach (var controllerFromPlugin in controllersFromPlugin)
-            {
-                controllerFeature.Controllers.Add(controllerFromPlugin.GetTypeInfo());
-            }
-            this.applicationPartManager.PopulateFeature(controllerFeature);
-            this.controllerFeatureProvider.PopulateFeature(new[] { new AssemblyPart(pluginAssembly) }, controllerFeature);
+            // This works, load the assembly into the default load context
+            var pluginAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(assemblyPluginLoadContext.PluginAssemblyPath, assemblyPluginLoadContext.PluginAssemblyName));
 
-            //ActionDescriptorChangeProvider.Instance.HasChanged = true;
-            this.actionDescriptorChangeProvider.GetChangeToken();
+            // This does not work: 404
+            //var pluginAssembly = await pluginLoadOptions.AssemblyLoader.LoadAsync(assemblyPluginLoadContext);
+
+            this.applicationPartManager.ApplicationParts.Add(new AssemblyPart(pluginAssembly));
+
+            this.actionDescriptorChangeProvider.HasChanged = true;
+            this.actionDescriptorChangeProvider.TokenSource.Cancel();
+
 
             return new OkResult();
         }

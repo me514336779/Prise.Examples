@@ -6,9 +6,16 @@ namespace MyHost.Infrastructure
 {
     public class ActionDescriptorChangeProvider : IActionDescriptorChangeProvider
     {
+        public static ActionDescriptorChangeProvider Instance { get; } = new ActionDescriptorChangeProvider();
+
+        public CancellationTokenSource TokenSource { get; private set; }
+
+        public bool HasChanged { get; set; }
+
         public IChangeToken GetChangeToken()
         {
-            return new CancellationChangeToken(new CancellationTokenSource().Token);
+            TokenSource = new CancellationTokenSource();
+            return new CancellationChangeToken(TokenSource.Token);
         }
     }
 }

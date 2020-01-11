@@ -8,11 +8,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MyHost.Controllers;
 using MyHost.Infrastructure;
 using Prise;
 using Prise.AssemblyScanning.Discovery;
@@ -33,7 +36,12 @@ namespace MyHost
         {
             services.AddControllers();
 
-            services.AddSingleton<IActionDescriptorChangeProvider>(new ActionDescriptorChangeProvider());
+            services.AddTransient<FeatureController>();
+            var provider = new ActionDescriptorChangeProvider();
+            services.AddSingleton<IActionDescriptorChangeProvider>(provider);
+
+            services.AddSingleton<ActionDescriptorChangeProvider>(provider);
+            services.Replace(ServiceDescriptor.Transient<IControllerActivator, PriseControllersAsPluginActivator>());
 
             services.AddPrise<IFeaturePlugin>(config =>
                 config
