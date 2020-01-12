@@ -207,6 +207,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contract", "APIWithControll
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyHost", "APIWithControllersAsPlugins\MyHost\MyHost.csproj", "{F873A43C-7234-4C73-AB9B-FC2518DB7A35}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prise.Mvc", "..\Prise\src\Prise.Mvc\Prise.Mvc.csproj", "{783081C6-3A38-4850-92F1-4815AD4263DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1153,6 +1155,18 @@ Global
 		{F873A43C-7234-4C73-AB9B-FC2518DB7A35}.Release|x64.Build.0 = Release|Any CPU
 		{F873A43C-7234-4C73-AB9B-FC2518DB7A35}.Release|x86.ActiveCfg = Release|Any CPU
 		{F873A43C-7234-4C73-AB9B-FC2518DB7A35}.Release|x86.Build.0 = Release|Any CPU
+		{783081C6-3A38-4850-92F1-4815AD4263DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{783081C6-3A38-4850-92F1-4815AD4263DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{783081C6-3A38-4850-92F1-4815AD4263DF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{783081C6-3A38-4850-92F1-4815AD4263DF}.Debug|x64.Build.0 = Debug|Any CPU
+		{783081C6-3A38-4850-92F1-4815AD4263DF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{783081C6-3A38-4850-92F1-4815AD4263DF}.Debug|x86.Build.0 = Debug|Any CPU
+		{783081C6-3A38-4850-92F1-4815AD4263DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{783081C6-3A38-4850-92F1-4815AD4263DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{783081C6-3A38-4850-92F1-4815AD4263DF}.Release|x64.ActiveCfg = Release|Any CPU
+		{783081C6-3A38-4850-92F1-4815AD4263DF}.Release|x64.Build.0 = Release|Any CPU
+		{783081C6-3A38-4850-92F1-4815AD4263DF}.Release|x86.ActiveCfg = Release|Any CPU
+		{783081C6-3A38-4850-92F1-4815AD4263DF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

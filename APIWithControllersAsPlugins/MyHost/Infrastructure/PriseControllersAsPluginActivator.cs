@@ -28,10 +28,8 @@ namespace MyHost.Infrastructure
                     // But it should use the IFeatureServiceProvider from the IFeatureServiceCollection
                     var remoteController = pluginLoadOptions.Activator.CreateRemoteInstance(
                         controllerType,
-                        null,
-                        null,
                         pluginAssembly);
-                    // TODO Unable to cast object of type 'ProductsControllerPlugin.ProductsController' to type 'Microsoft.AspNetCore.Mvc.ControllerBase'.
+
                     return remoteController;
                 }
             }
