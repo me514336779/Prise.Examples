@@ -40,6 +40,8 @@ namespace MyHost
             var provider = new ActionDescriptorChangeProvider();
             services.AddSingleton<IActionDescriptorChangeProvider>(provider);
 
+            services.AddSingleton<PrisePluginCache>();
+
             services.AddSingleton<ActionDescriptorChangeProvider>(provider);
             services.Replace(ServiceDescriptor.Transient<IControllerActivator, PriseControllersAsPluginActivator>());
 
@@ -51,7 +53,7 @@ namespace MyHost
                     .ConfigureSharedServices(sharedServices =>
                     {
                         sharedServices.AddSingleton(Configuration);
-                    }));
+                    }).WithHostType(typeof(ControllerBase)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

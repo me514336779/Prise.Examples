@@ -29,26 +29,20 @@ namespace MyHost.Controllers
     {
         private readonly IPluginLoadOptions<IFeaturePlugin> pluginLoadOptions;
         private readonly ApplicationPartManager applicationPartManager;
-        //private readonly ActionDescriptorChangeProvider changeProvider;
-        private readonly ControllerFeatureProvider controllerFeatureProvider;
-        //private readonly IFeatureServiceProvider featureServiceProvider;
         private readonly ActionDescriptorChangeProvider actionDescriptorChangeProvider;
+        private readonly PrisePluginCache cache;
 
         public FeatureController(
             IPluginLoadOptions<IFeaturePlugin> pluginLoadOptions,
             ApplicationPartManager applicationPartManager,
-            ActionDescriptorChangeProvider actionDescriptorChangeProvider
-            //ActionDescriptorChangeProvider changeProvider
-            //IPluginLoader<IFeaturePlugin> pluginLoader,
-            //IFeatureServiceProvider featureServiceProvider
+            ActionDescriptorChangeProvider actionDescriptorChangeProvider,
+            PrisePluginCache cache
             )
         {
             this.applicationPartManager = applicationPartManager;
             this.pluginLoadOptions = pluginLoadOptions;
             this.actionDescriptorChangeProvider = actionDescriptorChangeProvider;
-            //this.changeProvider = changeProvider;
-            controllerFeatureProvider = (ControllerFeatureProvider)applicationPartManager.FeatureProviders
-                .Where(p => p is ControllerFeatureProvider).FirstOrDefault();
+            this.cache = cache;
         }
 
         [HttpGet]
@@ -72,17 +66,33 @@ namespace MyHost.Controllers
                 return new NotFoundResult();
 
             var assemblyPluginLoadContext = DefaultPluginLoadContext<IFeaturePlugin>.FromAssemblyScanResult(pluginToEnable);
-            // This works, load the assembly into the default load context
-            var pluginAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(assemblyPluginLoadContext.PluginAssemblyPath, assemblyPluginLoadContext.PluginAssemblyName));
-
-            // This does not work: 404
-            //var pluginAssembly = await pluginLoadOptions.AssemblyLoader.LoadAsync(assemblyPluginLoadContext);
+            var pluginAssembly = await pluginLoadOptions.AssemblyLoader.LoadAsync(assemblyPluginLoadContext);
 
             this.applicationPartManager.ApplicationParts.Add(new AssemblyPart(pluginAssembly));
+            this.cache.Add(pluginAssembly);
 
             this.actionDescriptorChangeProvider.HasChanged = true;
             this.actionDescriptorChangeProvider.TokenSource.Cancel();
 
+
+            return new OkResult();
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> Disable([FromQuery] string name)
+        {
+            var pluginAssemblies = await this.pluginLoadOptions.AssemblyScanner.Scan();
+
+            var pluginToDisable = pluginAssemblies.FirstOrDefault(p => p.PluginType.Name == name);
+            if (pluginToDisable == null)
+                return new NotFoundResult();
+            var pluginAssemblyToDisable = Path.GetFileNameWithoutExtension(pluginToDisable.AssemblyName);
+            var partToRemove = this.applicationPartManager.ApplicationParts.FirstOrDefault(a => a.Name == pluginAssemblyToDisable);
+            this.applicationPartManager.ApplicationParts.Remove(partToRemove);
+            this.cache.Remove(pluginAssemblyToDisable);
+
+            this.actionDescriptorChangeProvider.HasChanged = true;
+            this.actionDescriptorChangeProvider.TokenSource.Cancel();
 
             return new OkResult();
         }

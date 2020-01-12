@@ -13,6 +13,8 @@ namespace ProductsControllerPlugin
         {
         }
 
+        public ControllerBase AsControllerBase() => this as ControllerBase;
+
         [HttpGet]
         public async Task<IEnumerable<Product>> Get()
         {

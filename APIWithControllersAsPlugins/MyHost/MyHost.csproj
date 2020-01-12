@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Prise\src\Prise.AssemblyScanning.Discovery\Prise.AssemblyScanning.Discovery.csproj" />
     <ProjectReference Include="..\..\..\Prise\src\Prise.AssemblyScanning\Prise.AssemblyScanning.csproj" />
     <ProjectReference Include="..\..\..\Prise\src\Prise.Plugin\Prise.Plugin.csproj" />

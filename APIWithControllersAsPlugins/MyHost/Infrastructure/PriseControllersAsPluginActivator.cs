@@ -17,23 +17,23 @@ namespace MyHost.Infrastructure
         public object Create(ControllerContext context)
         {
             var pluginLoadOptions = context.HttpContext.RequestServices.GetRequiredService<IPluginLoadOptions<IFeaturePlugin>>();
+            var cache = context.HttpContext.RequestServices.GetRequiredService<PrisePluginCache>();
             var controllerType = context.ActionDescriptor.ControllerTypeInfo.AsType();
 
-            var pluginAssemblies = pluginLoadOptions.AssemblyScanner.Scan().Result;
-            var assemblyPluginLoadContext = DefaultPluginLoadContext<IFeaturePlugin>.FromAssemblyScanResult(pluginAssemblies.First());
-            var pluginAssembly = pluginLoadOptions.AssemblyLoader.LoadAsync(assemblyPluginLoadContext).Result;
-            if (pluginAssembly.GetTypes().Any(t => t.Name == controllerType.Name))
+            foreach (var pluginAssembly in cache.Get())
             {
-                // This will use the parameterless ctor
-                // But it should use the IFeatureServiceProvider from the IFeatureServiceCollection
-                var remoteController = pluginLoadOptions.Activator.CreateRemoteInstance(
-                    controllerType,
-                    null,
-                    null,
-                    pluginAssembly);
-
-                // TODO Unable to cast object of type 'ProductsControllerPlugin.ProductsController' to type 'Microsoft.AspNetCore.Mvc.ControllerBase'.
-                return remoteController;
+                if (pluginAssembly.GetTypes().Any(t => t.Name == controllerType.Name))
+                {
+                    // This will use the parameterless ctor
+                    // But it should use the IFeatureServiceProvider from the IFeatureServiceCollection
+                    var remoteController = pluginLoadOptions.Activator.CreateRemoteInstance(
+                        controllerType,
+                        null,
+                        null,
+                        pluginAssembly);
+                    // TODO Unable to cast object of type 'ProductsControllerPlugin.ProductsController' to type 'Microsoft.AspNetCore.Mvc.ControllerBase'.
+                    return remoteController;
+                }
             }
             var localController = context.HttpContext.RequestServices.GetRequiredService(controllerType);
             // load from default
