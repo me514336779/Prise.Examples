@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Contract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.Extensions.Logging;
-using MyHost.Infrastructure;
 using Prise;
 using Prise.Infrastructure;
+using Prise.Mvc.Infrastructure;
 
 namespace MyHost.Controllers
 {
-    public class Plugin
+    public class Feature
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -25,32 +19,32 @@ namespace MyHost.Controllers
 
     [ApiController]
     [Route("[controller]")]
-    public class FeatureController : ControllerBase
+    public class FeaturesController : ControllerBase
     {
-        private readonly IPluginLoadOptions<IFeaturePlugin> pluginLoadOptions;
+        private readonly IPluginLoadOptions<IControllerFeaturePlugin> pluginLoadOptions;
         private readonly ApplicationPartManager applicationPartManager;
-        private readonly ActionDescriptorChangeProvider actionDescriptorChangeProvider;
-        private readonly PrisePluginCache cache;
+        private readonly IPriseActionDescriptorChangeProvider pluginChangeProvider;
+        private readonly IPluginCache<IControllerFeaturePlugin> pluginCache;
 
-        public FeatureController(
-            IPluginLoadOptions<IFeaturePlugin> pluginLoadOptions,
+        public FeaturesController(
+            IPluginLoadOptions<IControllerFeaturePlugin> pluginLoadOptions,
             ApplicationPartManager applicationPartManager,
-            ActionDescriptorChangeProvider actionDescriptorChangeProvider,
-            PrisePluginCache cache
+            IPriseActionDescriptorChangeProvider pluginChangeProvider,
+            IPluginCache<IControllerFeaturePlugin> pluginCache
             )
         {
             this.applicationPartManager = applicationPartManager;
             this.pluginLoadOptions = pluginLoadOptions;
-            this.actionDescriptorChangeProvider = actionDescriptorChangeProvider;
-            this.cache = cache;
+            this.pluginChangeProvider = pluginChangeProvider;
+            this.pluginCache = pluginCache;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Plugin>> Get()
+        public async Task<IEnumerable<Feature>> Get()
         {
             var pluginAssemblies = await this.pluginLoadOptions.AssemblyScanner.Scan();
 
-            return pluginAssemblies.Select(p => new Plugin
+            return pluginAssemblies.Select(p => new Feature
             {
                 Name = p.PluginType.Name
             });
@@ -65,15 +59,12 @@ namespace MyHost.Controllers
             if (pluginToEnable == null)
                 return new NotFoundResult();
 
-            var assemblyPluginLoadContext = DefaultPluginLoadContext<IFeaturePlugin>.FromAssemblyScanResult(pluginToEnable);
+            var assemblyPluginLoadContext = DefaultPluginLoadContext<IControllerFeaturePlugin>.FromAssemblyScanResult(pluginToEnable);
             var pluginAssembly = await pluginLoadOptions.AssemblyLoader.LoadAsync(assemblyPluginLoadContext);
 
             this.applicationPartManager.ApplicationParts.Add(new AssemblyPart(pluginAssembly));
-            this.cache.Add(pluginAssembly);
-
-            this.actionDescriptorChangeProvider.HasChanged = true;
-            this.actionDescriptorChangeProvider.TokenSource.Cancel();
-
+            this.pluginCache.Add(pluginAssembly);
+            this.pluginChangeProvider.TriggerPluginChanged();
 
             return new OkResult();
         }
@@ -86,13 +77,14 @@ namespace MyHost.Controllers
             var pluginToDisable = pluginAssemblies.FirstOrDefault(p => p.PluginType.Name == name);
             if (pluginToDisable == null)
                 return new NotFoundResult();
+
             var pluginAssemblyToDisable = Path.GetFileNameWithoutExtension(pluginToDisable.AssemblyName);
             var partToRemove = this.applicationPartManager.ApplicationParts.FirstOrDefault(a => a.Name == pluginAssemblyToDisable);
-            this.applicationPartManager.ApplicationParts.Remove(partToRemove);
-            this.cache.Remove(pluginAssemblyToDisable);
 
-            this.actionDescriptorChangeProvider.HasChanged = true;
-            this.actionDescriptorChangeProvider.TokenSource.Cancel();
+            this.applicationPartManager.ApplicationParts.Remove(partToRemove);
+            await pluginLoadOptions.AssemblyLoader.UnloadAsync();
+            this.pluginCache.Remove(pluginAssemblyToDisable);
+            this.pluginChangeProvider.TriggerPluginChanged();
 
             return new OkResult();
         }

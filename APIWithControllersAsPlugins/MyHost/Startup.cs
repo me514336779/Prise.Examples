@@ -1,24 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Contract;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using MyHost.Controllers;
-using MyHost.Infrastructure;
 using Prise;
 using Prise.AssemblyScanning.Discovery;
+using Prise.Mvc;
 
 namespace MyHost
 {
@@ -36,24 +26,17 @@ namespace MyHost
         {
             services.AddControllers();
 
-            services.AddTransient<FeatureController>();
-            var provider = new ActionDescriptorChangeProvider();
-            services.AddSingleton<IActionDescriptorChangeProvider>(provider);
-
-            services.AddSingleton<PrisePluginCache>();
-
-            services.AddSingleton<ActionDescriptorChangeProvider>(provider);
-            services.Replace(ServiceDescriptor.Transient<IControllerActivator, PriseControllersAsPluginActivator>());
-
-            services.AddPrise<IFeaturePlugin>(config =>
+            services.AddPriseAsSingleton<IControllerFeaturePlugin>(config =>
                 config
                     .WithDefaultOptions(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"))
+                    .AddPriseControllersAsPlugins()
                     .ScanForAssemblies(composer =>
                         composer.UseDiscovery())
                     .ConfigureSharedServices(sharedServices =>
                     {
                         sharedServices.AddSingleton(Configuration);
-                    }).WithHostType(typeof(ControllerBase)));
+                    })
+                    .WithRemoteType(typeof(Microsoft.Extensions.Logging.ILogger)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

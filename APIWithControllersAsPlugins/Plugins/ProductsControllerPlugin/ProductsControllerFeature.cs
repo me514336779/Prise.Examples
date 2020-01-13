@@ -4,14 +4,8 @@ using Prise.Plugin;
 
 namespace ProductsControllerPlugin
 {
-    [Plugin(PluginType = typeof(IFeaturePlugin))]
-    public class ProductsControllerFeature : IFeaturePlugin
+    [Plugin(PluginType = typeof(IControllerFeaturePlugin))]
+    public class ProductsControllerFeature : IControllerFeaturePlugin
     {
-        internal ProductsControllerFeature()
-        { }
-
-        public string Name => throw new NotImplementedException();
-
-        public string Description => throw new NotImplementedException();
     }
 }

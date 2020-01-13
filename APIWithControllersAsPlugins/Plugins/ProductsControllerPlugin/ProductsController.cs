@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Prise.Plugin;
 using ProductsControllerPlugin.Models;
 
 namespace ProductsControllerPlugin
@@ -9,22 +12,25 @@ namespace ProductsControllerPlugin
     [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
-        public ProductsController()
+        private readonly ProductsDbContext dbContext;
+        internal ProductsController(ProductsDbContext dbContext)
         {
+            this.dbContext = dbContext;
         }
 
-        public ControllerBase AsControllerBase() => this as ControllerBase;
+        [PluginFactory]
+        public static ProductsController CreateInstanceOfController(IServiceProvider serviceProvider)
+        {
+            var service = serviceProvider.GetService(typeof(ProductsDbContext));
+            return new ProductsController(service as ProductsDbContext);
+        }
 
         [HttpGet]
         public async Task<IEnumerable<Product>> Get()
         {
-            return new List<Product> {
-                new Product
-                {
-                    Id = 1,
-                    Name = "Test"
-                }
-            };
+            return await dbContext.Products
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

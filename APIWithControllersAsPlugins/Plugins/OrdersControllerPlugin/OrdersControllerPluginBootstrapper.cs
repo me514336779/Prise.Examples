@@ -5,18 +5,19 @@ using Prise.Plugin;
 
 namespace OrdersControllerPlugin
 {
-    [PluginBootstrapper(PluginType = typeof(OrderControllerFeature))]
+    [PluginBootstrapper(PluginType = typeof(OrdersController))]
     public class OrdersControllerPluginBootstrapper : IPluginBootstrapper
     {
         public IServiceCollection Bootstrap(IServiceCollection services)
         {
-            var serviceProvider = services.BuildServiceProvider();
-            var featureServices = serviceProvider.GetRequiredService<IFeatureServiceCollection>();
-            var config = serviceProvider.GetRequiredService<IConfiguration>();
-            var tableStorageConfig = new TableStorageConfig();
-            config.Bind("TableStoragePlugin", tableStorageConfig);
+            var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
+            var ordersConfig = new OrdersConfig();
+            config.Bind("Orders", ordersConfig);
 
-            featureServices.AddScoped<TableStorageConfig>(tableStorageConfig);
+            services.AddScoped<OrdersConfig>((serviceProvider) =>
+            {
+                return ordersConfig;
+            });
 
             return services;
         }

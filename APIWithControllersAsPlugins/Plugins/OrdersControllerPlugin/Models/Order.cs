@@ -7,7 +7,7 @@ namespace OrdersControllerPlugin.Models
     public class Order
     {
         public int Id { get; set; }
-        public decimal Price { get; set; }
-        public decimal PriceIncVAT { get; set; }
+        public double Price { get; set; }
+        public double PriceIncVAT { get; set; }
     }
 }

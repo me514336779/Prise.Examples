@@ -8,10 +8,10 @@ namespace OrdersControllerPlugin
 {
     public class TableStorageProvider<T> where T : TableEntity, new()
     {
-        private readonly TableStorageConfig config;
+        private readonly OrdersConfig config;
         private CloudTable table;
 
-        protected TableStorageProvider(TableStorageConfig config)
+        internal TableStorageProvider(OrdersConfig config)
         {
             this.config = config;
         }

@@ -1,6 +1,6 @@
 ﻿namespace OrdersControllerPlugin
 {
-    public class TableStorageConfig
+    public class OrdersConfig
     {
         public string StorageAccount { get; set; }
         public string StorageKey { get; set; }

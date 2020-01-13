@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Contract;
 using Microsoft.AspNetCore.Mvc;
 using OrdersControllerPlugin.Models;
+using Prise.Plugin;
 
 namespace OrdersControllerPlugin
 {
@@ -15,9 +14,16 @@ namespace OrdersControllerPlugin
     {
         private readonly TableStorageProvider<OrderTableEntity> tableStorageProvider;
 
-        public OrdersController(IFeatureServiceProvider featureServiceProvider)
+        public OrdersController(OrdersConfig config)
         {
-            this.tableStorageProvider = featureServiceProvider.GetService<TableStorageProvider<OrderTableEntity>>();
+            this.tableStorageProvider = new TableStorageProvider<OrderTableEntity>(config);
+        }
+
+        [PluginFactory]
+        public static OrdersController CreateInstanceOfController(IServiceProvider serviceProvider)
+        {
+            var config = serviceProvider.GetService(typeof(OrdersConfig));
+            return new OrdersController(config as OrdersConfig);
         }
 
         [HttpGet]
