@@ -1,0 +1,46 @@
+﻿@model MyHost.Models.HomeViewModel
+@{
+    ViewData["Title"] = "ASP.NET Core MVC application with Prise features as controllers!";
+    ViewData["Title"] = "Error";
+}
+
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Feature Name
+                </th>
+                <th>
+                    Enabled
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Features)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsEnabled)
+                    </td>
+                    <td>
+                        @if (!item.IsEnabled)
+                        {
+                            <a asp-action="Enable" asp-route-id="@item.Name">Enable</a>
+                        }
+                        else
+                        {
+                            <a asp-action="Disable" asp-route-id="@item.Name">Disable</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
