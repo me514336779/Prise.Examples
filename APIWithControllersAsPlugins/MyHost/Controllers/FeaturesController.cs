@@ -82,7 +82,7 @@ namespace MyHost.Controllers
             var partToRemove = this.applicationPartManager.ApplicationParts.FirstOrDefault(a => a.Name == pluginAssemblyToDisable);
 
             this.applicationPartManager.ApplicationParts.Remove(partToRemove);
-            await pluginLoadOptions.AssemblyLoader.UnloadAsync();
+            await pluginLoadOptions.AssemblyLoader.UnloadAsync(pluginAssemblyToDisable);
             this.pluginCache.Remove(pluginAssemblyToDisable);
             this.pluginChangeProvider.TriggerPluginChanged();
 
