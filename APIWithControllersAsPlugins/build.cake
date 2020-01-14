@@ -28,6 +28,7 @@ private void CleanProject(string projectDirectory){
 
 Task("clean").Does( () =>
 { 
+  CleanProject("DashboardControllerPlugin");
   CleanProject("OrdersControllerPlugin");
   CleanProject("ProductsControllerPlugin");
 });
@@ -41,6 +42,7 @@ Task("build")
         Configuration = configuration
     };
 
+    DotNetCoreBuild("Plugins/DashboardControllerPlugin/DashboardControllerPlugin.csproj", settings);
     DotNetCoreBuild("Plugins/OrdersControllerPlugin/OrdersControllerPlugin.csproj", settings);
     DotNetCoreBuild("Plugins/ProductsControllerPlugin/ProductsControllerPlugin.csproj", settings);
 });
@@ -49,6 +51,13 @@ Task("publish")
   .IsDependentOn("build")
   .Does(() =>
   { 
+    DotNetCorePublish("Plugins/DashboardControllerPlugin/DashboardControllerPlugin.csproj", new DotNetCorePublishSettings
+    {
+        NoBuild = true,
+        Configuration = configuration,
+        OutputDirectory = "publish/DashboardControllerPlugin"
+    });
+
     DotNetCorePublish("Plugins/OrdersControllerPlugin/OrdersControllerPlugin.csproj", new DotNetCorePublishSettings
     {
         NoBuild = true,
@@ -68,6 +77,7 @@ Task("copy-to-apphost")
   .IsDependentOn("publish")
   .Does(() =>
   {
+    CopyDirectory("publish/DashboardControllerPlugin", "MyHost/bin/debug/netcoreapp3.1/Plugins/DashboardControllerPlugin");
     CopyDirectory("publish/OrdersControllerPlugin", "MyHost/bin/debug/netcoreapp3.1/Plugins/OrdersControllerPlugin");
     CopyDirectory("publish/ProductsControllerPlugin", "MyHost/bin/debug/netcoreapp3.1/Plugins/ProductsControllerPlugin");
   });

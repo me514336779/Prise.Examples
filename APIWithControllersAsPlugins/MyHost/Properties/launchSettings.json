@@ -20,7 +20,6 @@
     "MyHost": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "features",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

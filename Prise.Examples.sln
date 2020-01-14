@@ -209,6 +209,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyHost", "APIWithController
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prise.Mvc", "..\Prise\src\Prise.Mvc\Prise.Mvc.csproj", "{783081C6-3A38-4850-92F1-4815AD4263DF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashboardControllerPlugin", "APIWithControllersAsPlugins\Plugins\DashboardControllerPlugin\DashboardControllerPlugin.csproj", "{D89CA661-323F-4CBF-A00F-566D5C4DDF8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1167,6 +1169,18 @@ Global
 		{783081C6-3A38-4850-92F1-4815AD4263DF}.Release|x64.Build.0 = Release|Any CPU
 		{783081C6-3A38-4850-92F1-4815AD4263DF}.Release|x86.ActiveCfg = Release|Any CPU
 		{783081C6-3A38-4850-92F1-4815AD4263DF}.Release|x86.Build.0 = Release|Any CPU
+		{D89CA661-323F-4CBF-A00F-566D5C4DDF8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D89CA661-323F-4CBF-A00F-566D5C4DDF8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D89CA661-323F-4CBF-A00F-566D5C4DDF8B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D89CA661-323F-4CBF-A00F-566D5C4DDF8B}.Debug|x64.Build.0 = Debug|Any CPU
+		{D89CA661-323F-4CBF-A00F-566D5C4DDF8B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D89CA661-323F-4CBF-A00F-566D5C4DDF8B}.Debug|x86.Build.0 = Debug|Any CPU
+		{D89CA661-323F-4CBF-A00F-566D5C4DDF8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D89CA661-323F-4CBF-A00F-566D5C4DDF8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D89CA661-323F-4CBF-A00F-566D5C4DDF8B}.Release|x64.ActiveCfg = Release|Any CPU
+		{D89CA661-323F-4CBF-A00F-566D5C4DDF8B}.Release|x64.Build.0 = Release|Any CPU
+		{D89CA661-323F-4CBF-A00F-566D5C4DDF8B}.Release|x86.ActiveCfg = Release|Any CPU
+		{D89CA661-323F-4CBF-A00F-566D5C4DDF8B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1256,6 +1270,7 @@ Global
 		{956B6343-DCB2-4900-B305-11571365240C} = {36A52148-11E3-41D0-AC43-A03C02804B37}
 		{E8A1ACE9-472A-43F1-B385-7FF9C991FAB1} = {1D7AD34B-BFB8-432C-95E0-1622F3AD8080}
 		{F873A43C-7234-4C73-AB9B-FC2518DB7A35} = {1D7AD34B-BFB8-432C-95E0-1622F3AD8080}
+		{D89CA661-323F-4CBF-A00F-566D5C4DDF8B} = {36A52148-11E3-41D0-AC43-A03C02804B37}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {10760DFC-489A-43C7-947A-7189A0157E9E}

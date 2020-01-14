@@ -66,6 +66,7 @@ namespace host.Controllers
             return new HomeViewModel() { Features = loadedPlugins };
         }
 
+        [Route("home/enable/{pluginName}")]
         public async Task<IActionResult> Enable(string pluginName)
         {
             if (String.IsNullOrEmpty(pluginName))
@@ -74,7 +75,7 @@ namespace host.Controllers
             }
 
             var pluginAssemblies = await this.assemblyScanner.Scan();
-            var pluginToEnable = pluginAssemblies.FirstOrDefault(p => p.PluginType.Name == pluginName);
+            var pluginToEnable = pluginAssemblies.FirstOrDefault(p => Path.GetFileNameWithoutExtension(p.AssemblyName) == pluginName);
             if (pluginToEnable == null)
                 return NotFound();
 
@@ -85,9 +86,10 @@ namespace host.Controllers
             this.pluginCache.Add(pluginAssembly);
             this.pluginChangeProvider.TriggerPluginChanged();
 
-            return View(await GetHomeViewModel());
+            return Redirect("/");
         }
 
+        [Route("home/disable/{pluginName}")]
         public async Task<IActionResult> Disable(string pluginName)
         {
             if (String.IsNullOrEmpty(pluginName))
@@ -96,7 +98,7 @@ namespace host.Controllers
             }
 
             var pluginAssemblies = await this.assemblyScanner.Scan();
-            var pluginToDisable = pluginAssemblies.FirstOrDefault(p => p.PluginType.Name == pluginName);
+            var pluginToDisable = pluginAssemblies.FirstOrDefault(p => Path.GetFileNameWithoutExtension(p.AssemblyName) == pluginName);
             if (pluginToDisable == null)
                 return NotFound();
 
@@ -108,7 +110,7 @@ namespace host.Controllers
             this.pluginCache.Remove(pluginAssemblyToDisable);
             this.pluginChangeProvider.TriggerPluginChanged();
 
-            return View(await GetHomeViewModel());
+            return Redirect("/");
         }
 
         public IActionResult Privacy()
