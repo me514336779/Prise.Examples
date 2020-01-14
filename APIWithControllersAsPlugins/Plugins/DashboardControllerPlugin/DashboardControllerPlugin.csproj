@@ -6,13 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Views\Dashboard\Index.cshtml">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
+    <Content Remove="Views\**\*.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Views\**\*.cshtml" />
+    <EmbeddedResource Include="Views\**\*.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
