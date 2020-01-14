@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Contract;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ using Prise.AssemblyScanning;
 using Prise.Infrastructure;
 using Prise.Mvc.Infrastructure;
 
-namespace host.Controllers
+namespace MyHost.Controllers
 {
     public class HomeController : Controller
     {
@@ -81,6 +82,7 @@ namespace host.Controllers
 
             var assemblyPluginLoadContext = DefaultPluginLoadContext<IControllerFeaturePlugin>.FromAssemblyScanResult(pluginToEnable);
             var pluginAssembly = await this.pluginAssemblyLoader.LoadAsync(assemblyPluginLoadContext);
+            //var pluginAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(assemblyPluginLoadContext.PluginAssemblyPath, assemblyPluginLoadContext.PluginAssemblyName));
 
             this.applicationPartManager.ApplicationParts.Add(new AssemblyPart(pluginAssembly));
             this.pluginCache.Add(pluginAssembly);

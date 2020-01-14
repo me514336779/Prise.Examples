@@ -27,7 +27,6 @@ namespace MyHost
         {
             services.AddRazorPages();
             services.AddControllersWithViews();
-            services.AddSingleton<PartialViewResultExecutor>();
 
             services.AddPriseAsSingleton<IControllerFeaturePlugin>(config =>
                 config
@@ -66,7 +65,6 @@ namespace MyHost
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
-                //endpoints.MapControllers();
                 endpoints.MapControllerRoute(
                    name: "default",
                    pattern: "{controller=Home}/{action=Index}/{id?}");
