@@ -21,18 +21,18 @@ namespace MyHost2.Controllers
     {
         private readonly ApplicationPartManager applicationPartManager;
         private readonly ILogger<HomeController> logger;
-        private readonly IAssemblyScanner<IControllerFeaturePlugin> assemblyScanner;
-        private readonly IPluginAssemblyLoader<IControllerFeaturePlugin> pluginAssemblyLoader;
+        private readonly IAssemblyScanner<IMVCFeature> assemblyScanner;
+        private readonly IPluginAssemblyLoader<IMVCFeature> pluginAssemblyLoader;
         private readonly IPriseActionDescriptorChangeProvider pluginChangeProvider;
-        private readonly IPluginCache<IControllerFeaturePlugin> pluginCache;
+        private readonly IPluginCache<IMVCFeature> pluginCache;
 
         public HomeController(
             ApplicationPartManager applicationPartManager,
             ILogger<HomeController> logger,
-            IAssemblyScanner<IControllerFeaturePlugin> assemblyScanner,
-            IPluginAssemblyLoader<IControllerFeaturePlugin> pluginAssemblyLoader,
+            IAssemblyScanner<IMVCFeature> assemblyScanner,
+            IPluginAssemblyLoader<IMVCFeature> pluginAssemblyLoader,
             IPriseActionDescriptorChangeProvider pluginChangeProvider,
-            IPluginCache<IControllerFeaturePlugin> pluginCache
+            IPluginCache<IMVCFeature> pluginCache
         )
         {
             this.applicationPartManager = applicationPartManager;
@@ -81,7 +81,7 @@ namespace MyHost2.Controllers
             if (pluginToEnable == null)
                 return NotFound();
 
-            var assemblyPluginLoadContext = DefaultPluginLoadContext<IControllerFeaturePlugin>.FromAssemblyScanResult(pluginToEnable);
+            var assemblyPluginLoadContext = DefaultPluginLoadContext<IMVCFeature>.FromAssemblyScanResult(pluginToEnable);
             var pluginAssembly = await this.pluginAssemblyLoader.LoadAsync(assemblyPluginLoadContext);
             this.applicationPartManager.ApplicationParts.Add(new PluginAssemblyPart(pluginAssembly));
             this.pluginCache.Add(pluginAssembly);

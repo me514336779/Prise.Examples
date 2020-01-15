@@ -1,5 +1,7 @@
 var target = Argument("target", "default");
 var configuration = Argument("configuration", "Debug");
+var net2projects = new[] { "ProductsAPIControllerPlugin", "POTUSWidgetPlugin", "WeatherWidgetPlugin" };
+var net3projects = new[] { "OrdersAPIControllerPlugin" };
 
 private void CleanProject(string projectDirectory){
     var projectFile = $"Plugins/{projectDirectory}/{projectDirectory}.csproj";
@@ -28,9 +30,11 @@ private void CleanProject(string projectDirectory){
 
 Task("clean").Does( () =>
 { 
-  CleanProject("DashboardControllerPlugin");
-  CleanProject("OrdersControllerPlugin");
-  CleanProject("ProductsControllerPlugin");
+  var allProjects = net2projects.Union(net3projects);
+  foreach (var project in allProjects)
+  {
+    CleanProject(project);
+  }
 });
 
 Task("build")
@@ -42,46 +46,42 @@ Task("build")
         Configuration = configuration
     };
 
-    DotNetCoreBuild("Plugins/DashboardControllerPlugin/DashboardControllerPlugin.csproj", settings);
-    DotNetCoreBuild("Plugins/OrdersControllerPlugin/OrdersControllerPlugin.csproj", settings);
-    DotNetCoreBuild("Plugins/ProductsControllerPlugin/ProductsControllerPlugin.csproj", settings);
+    var allProjects = net2projects.Union(net3projects);
+    foreach (var project in allProjects)
+    {
+      DotNetCoreBuild($"Plugins/{project}/{project}.csproj", settings);
+    }
 });
 
 Task("publish")
   .IsDependentOn("build")
   .Does(() =>
   { 
-    DotNetCorePublish("Plugins/DashboardControllerPlugin/DashboardControllerPlugin.csproj", new DotNetCorePublishSettings
+    var allProjects = net2projects.Union(net3projects);
+    foreach (var project in allProjects)
     {
-        NoBuild = true,
-        Configuration = configuration,
-        OutputDirectory = "publish/DashboardControllerPlugin"
-    });
-
-    DotNetCorePublish("Plugins/OrdersControllerPlugin/OrdersControllerPlugin.csproj", new DotNetCorePublishSettings
-    {
-        NoBuild = true,
-        Configuration = configuration,
-        OutputDirectory = "publish/OrdersControllerPlugin"
-    });
-
-    DotNetCorePublish("Plugins/ProductsControllerPlugin/ProductsControllerPlugin.csproj", new DotNetCorePublishSettings
-    {
-        NoBuild = true,
-        Configuration = configuration,
-        OutputDirectory = "publish/ProductsControllerPlugin"
-    });
+      DotNetCorePublish($"Plugins/{project}/{project}.csproj", new DotNetCorePublishSettings
+      {
+          NoBuild = true,
+          Configuration = configuration,
+          OutputDirectory = $"publish/{project}"
+      });
+    }
   });
 
 Task("copy-to-apphost")
   .IsDependentOn("publish")
   .Does(() =>
   {
-    CopyDirectory("publish/DashboardControllerPlugin", "MyHost/bin/debug/netcoreapp3.1/Plugins/DashboardControllerPlugin");
-    CopyDirectory("publish/DashboardControllerPlugin", "MyHost2/bin/debug/netcoreapp2.1/Plugins/DashboardControllerPlugin");
-    CopyDirectory("publish/OrdersControllerPlugin", "MyHost/bin/debug/netcoreapp3.1/Plugins/OrdersControllerPlugin");
-    CopyDirectory("publish/ProductsControllerPlugin", "MyHost/bin/debug/netcoreapp3.1/Plugins/ProductsControllerPlugin");
-    CopyDirectory("publish/ProductsControllerPlugin", "MyHost2/bin/debug/netcoreapp2.1/Plugins/ProductsControllerPlugin");
+    foreach (var project in net2projects)
+    {
+      CopyDirectory($"publish/{project}", $"MyHost2/bin/debug/netcoreapp2.1/Plugins/{project}");
+    }
+
+    foreach (var project in net2projects.Union(net3projects))
+    {
+      CopyDirectory($"publish/{project}", $"MyHost/bin/debug/netcoreapp3.1/Plugins/{project}");
+    }
   });
 
 Task("default")

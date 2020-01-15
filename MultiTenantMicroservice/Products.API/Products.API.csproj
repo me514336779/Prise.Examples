@@ -9,6 +9,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Prise\src\Prise.AssemblyScanning.Discovery\Prise.AssemblyScanning.Discovery.csproj" />
+    <ProjectReference Include="..\..\..\Prise\src\Prise.AssemblyScanning\Prise.AssemblyScanning.csproj" />
+    <ProjectReference Include="..\..\..\Prise\src\Prise.Mvc\Prise.Mvc.csproj" />
+    <ProjectReference Include="..\..\..\Prise\src\Prise.Plugin\Prise.Plugin.csproj" />
+    <ProjectReference Include="..\..\..\Prise\src\Prise\Prise.csproj" />
     <ProjectReference Include="..\Contract\Contract.csproj" />
   </ItemGroup>
 

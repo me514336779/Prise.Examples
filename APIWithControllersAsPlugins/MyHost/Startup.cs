@@ -32,7 +32,7 @@ namespace MyHost
             // This is required for our razor pages to be found
             services.AddRazorPages().AddRazorRuntimeCompilation();
 
-            services.AddPriseAsSingleton<IControllerFeaturePlugin>(config =>
+            services.AddPriseAsSingleton<IMVCFeature>(config =>
                 config
                     .WithDefaultOptions(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"))
                     .AddPriseControllersAsPlugins(Environment.WebRootPath)
@@ -48,7 +48,7 @@ namespace MyHost
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.EnsureStaticPluginCache<IControllerFeaturePlugin>();
+            app.EnsureStaticPluginCache<IMVCFeature>();
 
             if (env.IsDevelopment())
             {

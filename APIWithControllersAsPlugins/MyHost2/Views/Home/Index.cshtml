@@ -4,17 +4,14 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">ASP.NET Core 3.1 MVC Plugins using Prise!</h1>
+    <h1 class="display-4">ASP.NET Core 2.1 MVC Plugins using Prise!</h1>
     <img src="https://github.com/merken/Prise/blob/master/docs/prise.png?raw=true" height="50px" />
-    <div class="display-4" style="font-size:21pt">These are the features (IMVCFeature) plugins discovered using Prise Assembly Scanning:</div>
+    <div class="display-4" style="font-size:21pt">Not all features are compatible with netcoreapp2.1. Also, assembly scanning in 2.1 is slow.</div>
     <table class="table">
         <thead>
             <tr>
                 <th>
                     Feature Name
-                </th>
-                <th>
-                    Feature Description
                 </th>
                 <th></th>
             </tr>
@@ -25,9 +22,6 @@
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td style="text-align:left">
-                        @Html.DisplayFor(modelItem => item.Description)
                     </td>
                     <td>
                         @if (!item.IsEnabled)

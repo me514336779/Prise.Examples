@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.Loader;
+using System.Reflection;
 using System.Threading.Tasks;
 using Contract;
 using Microsoft.AspNetCore.Mvc;
@@ -21,18 +22,18 @@ namespace MyHost.Controllers
     {
         private readonly ApplicationPartManager applicationPartManager;
         private readonly ILogger<HomeController> logger;
-        private readonly IAssemblyScanner<IControllerFeaturePlugin> assemblyScanner;
-        private readonly IPluginAssemblyLoader<IControllerFeaturePlugin> pluginAssemblyLoader;
+        private readonly IAssemblyScanner<IMVCFeature> assemblyScanner;
+        private readonly IPluginAssemblyLoader<IMVCFeature> pluginAssemblyLoader;
         private readonly IPriseActionDescriptorChangeProvider pluginChangeProvider;
-        private readonly IPluginCache<IControllerFeaturePlugin> pluginCache;
+        private readonly IPluginCache<IMVCFeature> pluginCache;
 
         public HomeController(
             ApplicationPartManager applicationPartManager,
             ILogger<HomeController> logger,
-            IAssemblyScanner<IControllerFeaturePlugin> assemblyScanner,
-            IPluginAssemblyLoader<IControllerFeaturePlugin> pluginAssemblyLoader,
+            IAssemblyScanner<IMVCFeature> assemblyScanner,
+            IPluginAssemblyLoader<IMVCFeature> pluginAssemblyLoader,
             IPriseActionDescriptorChangeProvider pluginChangeProvider,
-            IPluginCache<IControllerFeaturePlugin> pluginCache
+            IPluginCache<IMVCFeature> pluginCache
         )
         {
             this.applicationPartManager = applicationPartManager;
@@ -55,6 +56,9 @@ namespace MyHost.Controllers
 
             var loadedPlugins = from plugin in pluginAssemblies
                                 let pluginName = Path.GetFileNameWithoutExtension(plugin.AssemblyName)
+                                let pluginType = plugin.PluginType
+                                let pluginDescriptionAttribute = CustomAttributeData.GetCustomAttributes(pluginType).FirstOrDefault(c => c.AttributeType.Name == typeof(MVCFeatureDescriptionAttribute).Name)
+                                let pluginDescription = pluginDescriptionAttribute.NamedArguments.FirstOrDefault(a => a.MemberName == "Description").TypedValue.Value as string
                                 join part in applicationParts
                                     on pluginName equals part.Name
                                     into pluginParts
@@ -62,6 +66,7 @@ namespace MyHost.Controllers
                                 select new Feature
                                 {
                                     Name = pluginName,
+                                    Description = pluginDescription,
                                     IsEnabled = pluginPart != null
                                 };
 
@@ -81,8 +86,11 @@ namespace MyHost.Controllers
             if (pluginToEnable == null)
                 return NotFound();
 
-            var assemblyPluginLoadContext = DefaultPluginLoadContext<IControllerFeaturePlugin>.FromAssemblyScanResult(pluginToEnable);
+            var assemblyPluginLoadContext = DefaultPluginLoadContext<IMVCFeature>.FromAssemblyScanResult(pluginToEnable);
             var pluginAssembly = await this.pluginAssemblyLoader.LoadAsync(assemblyPluginLoadContext);
+            var feature = pluginAssembly.GetTypes().FirstOrDefault(t => t.GetInterfaces().Any(i => i.Name == typeof(IMVCFeature).Name));
+            var featureDescriptionAttribute = feature.GetCustomAttributes(false).FirstOrDefault(c => c.GetType().Name == typeof(MVCFeatureDescriptionAttribute).Name);
+            var description = featureDescriptionAttribute.GetType().GetProperty("Description").GetValue(featureDescriptionAttribute);
             this.applicationPartManager.ApplicationParts.Add(new PluginAssemblyPart(pluginAssembly));
             this.pluginCache.Add(pluginAssembly);
             this.pluginChangeProvider.TriggerPluginChanged();

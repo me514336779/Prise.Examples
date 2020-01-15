@@ -34,9 +34,8 @@ namespace MyHost2
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            //services.AddControllersWithViews();
 
-            services.AddPriseAsSingleton<IControllerFeaturePlugin>(config =>
+            services.AddPriseAsSingleton<IMVCFeature>(config =>
                 config
                     .WithDefaultOptions(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"))
                     .AddPriseControllersAsPlugins(Environment.WebRootPath)
@@ -46,13 +45,14 @@ namespace MyHost2
                     {
                         sharedServices.AddSingleton(Configuration);
                     })
-                    .WithRemoteType(typeof(Microsoft.Extensions.Logging.ILogger)));
+                    //.WithRemoteType(typeof(Microsoft.Extensions.Logging.ILogger))
+                    );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.EnsureStaticPluginCache<IControllerFeaturePlugin>();
+            app.EnsureStaticPluginCache<IMVCFeature>();
 
             if (env.IsDevelopment())
             {
@@ -62,9 +62,15 @@ namespace MyHost2
             {
                 app.UseHsts();
             }
+            app.UseStaticFiles();
 
-            app.UseHttpsRedirection();
-            app.UseMvc();
+            //app.UseHttpsRedirection();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }
