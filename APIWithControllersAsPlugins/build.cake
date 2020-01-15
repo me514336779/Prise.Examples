@@ -78,8 +78,10 @@ Task("copy-to-apphost")
   .Does(() =>
   {
     CopyDirectory("publish/DashboardControllerPlugin", "MyHost/bin/debug/netcoreapp3.1/Plugins/DashboardControllerPlugin");
+    CopyDirectory("publish/DashboardControllerPlugin", "MyHost2/bin/debug/netcoreapp2.1/Plugins/DashboardControllerPlugin");
     CopyDirectory("publish/OrdersControllerPlugin", "MyHost/bin/debug/netcoreapp3.1/Plugins/OrdersControllerPlugin");
     CopyDirectory("publish/ProductsControllerPlugin", "MyHost/bin/debug/netcoreapp3.1/Plugins/ProductsControllerPlugin");
+    CopyDirectory("publish/ProductsControllerPlugin", "MyHost2/bin/debug/netcoreapp2.1/Plugins/ProductsControllerPlugin");
   });
 
 Task("default")

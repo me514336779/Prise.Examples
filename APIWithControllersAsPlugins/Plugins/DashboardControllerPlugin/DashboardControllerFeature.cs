@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Contract;
-using System.Text;
+﻿using Contract;
 using Prise.Plugin;
 
 namespace DashboardControllerPlugin
@@ -9,6 +6,7 @@ namespace DashboardControllerPlugin
     [Plugin(PluginType = typeof(IControllerFeaturePlugin))]
     public class DashboardControllerFeature : IControllerFeaturePlugin
     {
+        // Nothing to do here, just some feature discovery happening...
     }
 }
 

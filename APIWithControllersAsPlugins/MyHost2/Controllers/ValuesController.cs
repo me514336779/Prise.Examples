@@ -8,14 +8,14 @@ using Contract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.Logging;
-using MyHost.Models;
+using MyHost2.Models;
 using Prise;
 using Prise.AssemblyScanning;
 using Prise.Infrastructure;
 using Prise.Mvc;
 using Prise.Mvc.Infrastructure;
 
-namespace MyHost.Controllers
+namespace MyHost2.Controllers
 {
     public class HomeController : Controller
     {
