@@ -1,6 +1,6 @@
 var target = Argument("target", "default");
 var configuration = Argument("configuration", "Debug");
-var net2projects = new[] { "ProductsAPIControllerPlugin", "POTUSWidgetPlugin", "WeatherWidgetPlugin" };
+var net2projects = new[] { "ProductsAPIControllerPlugin", "TwitterWidgetPlugin", "WeatherWidgetPlugin" };
 var net3projects = new[] { "OrdersAPIControllerPlugin" };
 
 private void CleanProject(string projectDirectory){

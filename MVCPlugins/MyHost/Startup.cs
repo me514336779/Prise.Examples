@@ -1,56 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Contract;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Hosting;
 using Prise;
 using Prise.AssemblyScanning.Discovery;
 using Prise.Mvc;
+using Prise.Mvc.Infrastructure;
 
-namespace MyHost2
+namespace MyHost
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IHostingEnvironment environment)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
             Environment = environment;
         }
 
-        public IHostingEnvironment Environment { get; }
-
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddControllersWithViews();
+            // This is required for our razor pages to be found
+            services.AddRazorPages().AddRazorRuntimeCompilation();
 
             services.AddPriseAsSingleton<IMVCFeature>(config =>
                 config
                     .WithDefaultOptions(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"))
-                    .AddPriseControllersAsPlugins(Environment.WebRootPath)
+                    .AddPriseRazorPlugins(Environment.WebRootPath)
                     .ScanForAssemblies(composer =>
                         composer.UseDiscovery())
                     .ConfigureSharedServices(sharedServices =>
                     {
                         sharedServices.AddSingleton(Configuration);
                     })
-                    //.WithRemoteType(typeof(Microsoft.Extensions.Logging.ILogger))
-                    );
+                    .WithRemoteType(typeof(Microsoft.Extensions.Logging.ILogger)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.EnsureStaticPluginCache<IMVCFeature>();
 
@@ -60,16 +56,24 @@ namespace MyHost2
             }
             else
             {
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            //app.UseHttpsRedirection();
-            app.UseMvc(routes =>
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                   name: "default",
+                   pattern: "{controller=Home}/{action=Index}/{id?}");
+
             });
         }
     }
