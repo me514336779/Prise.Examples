@@ -6,14 +6,29 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Prise\src\Prise.AssemblyScanning.Discovery\Prise.AssemblyScanning.Discovery.csproj" />
+    <ProjectReference Include="..\..\..\Prise\src\Prise.AssemblyScanning\Prise.AssemblyScanning.csproj" />
+    <ProjectReference Include="..\..\..\Prise\src\Prise.Plugin\Prise.Plugin.csproj" />
+    <ProjectReference Include="..\..\..\Prise\src\Prise.Proxy\Prise.Proxy.csproj" />
+    <ProjectReference Include="..\..\..\Prise\src\Prise\Prise.csproj" />
     <ProjectReference Include="..\Contract\Contract.csproj" />
+    <ProjectReference Include="..\ExternalServices\ExternalServices.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Plugins\**" LinkBase="Plugins" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="languages.json" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Prise" Version="1.4.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="languages.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

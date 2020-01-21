@@ -1,12 +1,13 @@
+using System;
+using System.IO;
 using Contract;
+using ExternalServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Prise;
-using System;
-using System.IO;
 
 namespace MyHost
 {
@@ -32,11 +33,13 @@ namespace MyHost
                 .IgnorePlatformInconsistencies() // The plugin is a netstandard library, the host is a netcoreapp, ignore this inconsistency
                 .ConfigureSharedServices(sharedServices =>
                 {
-                    var myHostServiceProvider = services.BuildServiceProvider();
-                    var acceptheaderLanguageService = myHostServiceProvider.GetRequiredService<IExternalService>();
+                    //var myHostServiceProvider = services.BuildServiceProvider();
+                    //var acceptheaderLanguageService = myHostServiceProvider.GetRequiredService<IExternalService>();
+                    //var k = ProxyCreator.CreateProxy<IExternalService>(acceptheaderLanguageService);
                     // Gets the AcceptHeaderlanguageService and adds it to the ServiceCollection for creating the LanguageBasedPlugin
                     // This can be added as a Singleton, since the scope is defined by the MyHost, and this is always Scoped.
-                    sharedServices.AddSingleton<IExternalService>(acceptheaderLanguageService);
+                    sharedServices.AddHttpContextAccessor();
+                    sharedServices.AddTransient<IExternalService, AcceptHeaderlanguageService>();
                 })
             );
         }
