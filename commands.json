@@ -60,11 +60,6 @@
       "WorkingDirectory": "PluginWithExternalServices",
       "Arguments": "/c cake"
     },
-    "PluginWithSharedDependencies": {
-      "FileName": "cmd.exe",
-      "WorkingDirectory": "PluginWithSharedDependencies",
-      "Arguments": "/c cake"
-    },
     "SimplePlugin": {
       "FileName": "cmd.exe",
       "WorkingDirectory": "SimplePlugin",

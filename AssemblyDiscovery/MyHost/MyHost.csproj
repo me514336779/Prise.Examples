@@ -5,18 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.7">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\..\..\Prise\src\Prise.AssemblyScanning.Discovery\Prise.AssemblyScanning.Discovery.csproj" />
+    <ProjectReference Include="..\..\..\Prise\src\Prise.AssemblyScanning\Prise.AssemblyScanning.csproj" />
+    <ProjectReference Include="..\..\..\Prise\src\Prise.PluginBridge\Prise.PluginBridge.csproj" />
+    <ProjectReference Include="..\..\..\Prise\src\Prise.Plugin\Prise.Plugin.csproj" />
+    <ProjectReference Include="..\..\..\Prise\src\Prise.Proxy\Prise.Proxy.csproj" />
+    <ProjectReference Include="..\..\..\Prise\src\Prise\Prise.csproj" />
     <ProjectReference Include="..\Contract\Contract.csproj" />
   </ItemGroup>
 
  <ItemGroup>
-    <PackageReference Include="Prise" Version="1.4.5" />
-    <PackageReference Include="Prise.AssemblyScanning.Discovery" Version="1.4.5" />
+   <PackageReference Include="Prise" Version="1.5.0-beta1" />
+   <PackageReference Include="Prise.AssemblyScanning.Discovery" Version="1.5.0-beta1" />
   </ItemGroup>
 </Project>

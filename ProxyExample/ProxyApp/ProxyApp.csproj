@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Prise\src\Prise.Proxy\Prise.Proxy.csproj" />
+    <PackageReference Include="Prise.Proxy" Version="1.5.0-beta1" />
   </ItemGroup>
 
   <ItemGroup>

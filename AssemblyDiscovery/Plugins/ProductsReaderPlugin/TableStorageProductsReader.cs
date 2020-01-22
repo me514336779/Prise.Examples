@@ -1,9 +1,10 @@
-﻿using Contract;
-using Prise.Plugin;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Contract;
+using Microsoft.Extensions.Configuration;
+using Prise.Plugin;
 using TableStorageConnector;
 
 namespace ProductsReaderPlugin
@@ -22,10 +23,10 @@ namespace ProductsReaderPlugin
         }
 
         [PluginFactory]
-        public static TableStorageProductsReader ThisIsTheFactoryMethod(IServiceProvider serviceProvider)
+        public static TableStorageProductsReader ThisIsTheFactoryMethod(IPluginServiceProvider serviceProvider)
         {
-            var config = serviceProvider.GetService(typeof(TableStorageConfig));
-            return new TableStorageProductsReader(config as TableStorageConfig);
+            var config = serviceProvider.GetPluginService<TableStorageConfig>();
+            return new TableStorageProductsReader(config);
         }
 
         public async Task<IEnumerable<Product>> All()

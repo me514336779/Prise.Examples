@@ -42,7 +42,7 @@ namespace MyHost
                 .WithDefaultOptions(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"))
                 .ScanForAssemblies(composer =>
                     composer.UseDiscovery())
-                .ConfigureSharedServices(services =>
+                .ConfigureHostServices(services =>
                 {
                     services.AddSingleton(Configuration);
                 })

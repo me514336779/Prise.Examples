@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Language.Domain;
+using Microsoft.Extensions.DependencyInjection;
 using Prise.Plugin;
 
 namespace LanguageBased.Plugin
@@ -8,7 +9,7 @@ namespace LanguageBased.Plugin
     {
         public IServiceCollection Bootstrap(IServiceCollection services)
         {
-            // Register all services that are required to load the LanguageBasedPlugin
+            // Register 3rd party services, not known to the MyHost
             services.AddScoped<IDictionaryService, DictionaryService>();
             return services;
         }

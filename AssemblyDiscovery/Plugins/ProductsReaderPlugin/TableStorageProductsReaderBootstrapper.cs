@@ -10,12 +10,12 @@ namespace ProductsReaderPlugin
     {
         public IServiceCollection Bootstrap(IServiceCollection services)
         {
-            var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
-            var tableStorageConfig = new TableStorageConfig();
-            config.Bind("TableStoragePlugin", tableStorageConfig);
-
-            services.AddScoped<TableStorageConfig>((serviceProvider) =>
+            services.AddScoped<TableStorageConfig>((sp) =>
             {
+                var pluginServices = sp.GetRequiredService<IPluginServiceProvider>();
+                var config = pluginServices.GetHostService<IConfiguration>();
+                var tableStorageConfig = new TableStorageConfig();
+                config.Bind("TableStoragePlugin", tableStorageConfig);
                 return tableStorageConfig;
             });
 
